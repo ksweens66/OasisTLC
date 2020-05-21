@@ -8,7 +8,7 @@ Sends important data to Beaglebone
 
 #include <Arduino.h>
 #include <kinetis.h>
-#include<Constants.h>
+#include <Constants.h>
 
 double e = 0;                                         // Error from the target temperature, 0 at startup so not null
 float x = 0;                                          // integrater term, 0 at startup so not null
