@@ -18,7 +18,6 @@ const int       analogBitCount = 14;                  // analog bit count
 const int       analogMax = (1 << analogBitCount) - 1;// maximum analog value
 const int       avgThermLoop = 5;                     // number of loops to calculate the average thermistor value
 const int       PWM_pin = 4;                          // A changeable pin value, 4 is a placeholder for now
-int percent =   analogMax / 2;                        // initializes the percent to 50% of the maximum analog value
 
 const int TS = 100;                                   // Time sample
 const float KP = .25;                                 // Proportional gain

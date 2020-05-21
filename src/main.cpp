@@ -11,8 +11,9 @@ Sends important data to Beaglebone
 #include <Constants.h>
 
 double e = 0;                                         // Error from the target temperature, 0 at startup so not null
-float x = 0;                                          // integrater term, 0 at startup so not null
+float  x = 0;                                          // integrater term, 0 at startup so not null
 double u = 0;                                         // Duty cycle, 0 at startup so not null
+int percent =   analogMax / 2;                        // initializes the percent to 50% of the maximum analog value
  
 IntervalTimer wdTimer;                                // Initialize Interval Timer
             
