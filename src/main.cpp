@@ -10,9 +10,9 @@ Sends important data to Beaglebone
 #include <kinetis.h>
 #include <Constants.h>
 
-double e = 0;                                         // Error from the target temperature, 0 at startup so not null
-float  x = 0;                                          // integrater term, 0 at startup so not null
-double u = 0;                                         // Duty cycle, 0 at startup so not null
+double error = 0;                                     // Error from the target temperature, 0 at startup so not null
+float  integrator_term = 0;                                         // integrater term, 0 at startup so not null
+double duty_cycle = 0;                                // Duty cycle, 0 at startup so not null
 int percent =   analogMax / 2;                        // initializes the percent to 50% of the maximum analog value
  
 IntervalTimer wdTimer;                                // Initialize Interval Timer
@@ -77,15 +77,15 @@ void loop() {
     delay (1000);                                   // used to slow LED blink 
     
     /* Realize PI Controller */
-    e = TF_SP - calcTemp(); // error is the SET_POINT - ACTUAL (TF_PV)
-    x = x + TS*e/1000;
-    u = KP*e + KI*x;
-    if (u >1)
-        u =1;
-    else if (u<0)
-        u = 0;
+    error = TF_SP - calcTemp();                     // error is the SET_POINT - ACTUAL (TF_PV)
+    integrator_term = integrator_term + (TS*error)/1000;
+    duty_cycle = KP*error + KI*integrator_term;
+    if (duty_cycle > 1)
+        duty_cycle =1;
+    else if (duty_cycle < 0)
+        duty_cycle = 0;
     
-    analogWrite(PWM_pin, u*analogMax);              // writes an pwm signal proportional to (duty cycle * u) to the PWM pin
+    analogWrite(PWM_pin, duty_cycle*analogMax);     // writes an pwm signal proportional to (analogMax * duty_cycle) to the PWM pin. Ex. 255*0.5 or 255*.1
 
     //Write
     WatchDogReset();
