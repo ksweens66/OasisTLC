@@ -8,18 +8,28 @@ Sends important data to Beaglebone
 
 #include <Arduino.h>
 #include <kinetis.h>
-#include <Constants.h>
+#include "Constants.h"
+#include "thermistorCalcs.h"
+#include <string>
 
-double error = 0;                                     // Error from the target temperature, 0 at startup so not null
-float  integrator_term = 0;                                         // integrater term, 0 at startup so not null
-double duty_cycle = 0;                                // Duty cycle, 0 at startup so not null
-int percent =   analogMax / 2;                        // initializes the percent to 50% of the maximum analog value
- 
-IntervalTimer wdTimer;                                // Initialize Interval Timer
-            
+#define BBB_comms Serial                              // Serial is USB. Serial1 is Pins 0 and 1. BBB_comms is a more descriptive name in the main code
+
+double  error = 0;                                     // Error from the target temperature, 0 at startup so not null
+double  integrator_term = 0;                           // integrater term, 0 at startup so not null
+double  duty_cycle = 0;                                // Duty cycle, 0 at startup so not null
+//int     percent =   analogMax / 2;                   // initializes the percent to 50% of the maximum analog value. Not sure I like this, so it is commented out. To add back in, do an analog write in the setup()
+double  thermistor_reading;
+double  temperature_readings[thermistor_count];
+
+String temperature_string;
+String mini_temperature;
+
+IntervalTimer wdTimer;                                // Initialize Interval Timer          
 void WatchDogReset();
+
+
 void setup() {
-    Serial.begin(baudRate);                       // change baud rate accordingly
+    BBB_comms.begin(baudRate);                       // change baud rate accordingly
     analogReadRes(analogBitCount);                // set analog reading bit count
 
     noInterrupts();                               // interrupts must be disabled while setting up the watchdog timer
@@ -35,34 +45,11 @@ void setup() {
     interrupts();                                 // interrupts re-enabled
     
     //PWM Code
-    analogWriteFrequency(PWM_pin, frequency);      // Set PWM write Frequency
+    analogWriteFrequency(heater_1_Pin, frequency); // Set PWM write Frequency
     analogWriteResolution(analogBitCount);         // Set bit resolution (For now, 14 bits until further updated)
-    analogWrite(PWM_pin, percent);                 // Set PWM on and off percent refered to the bit resolution
-
+    analogWriteFrequency(heater_2_Pin, frequency); // Set PWM write Frequency
+    analogWriteFrequency(heater_3_Pin, frequency); // Set PWM write Frequency
     pinMode(LEDPIN, OUTPUT);
-}
-
-float calcTemp() {
-    float totalTemp1 = 0;                         //  total temperature of thermistor1 reading per loop
-
-    for (int i = 0; i < avgThermLoop; i++) {
-        int analog1 = analogRead(A1);             // change pin accordingly, measures analog value of thermistor1
-        Serial.print("Analog Value:          ");
-        Serial.println(analog1);
-        float thermistor1 = (analog1 * resistor) / (analogMax - analog1);                       // calculates resistance of thermistor1
-        float temperature1 = 1 / (a + b * log(thermistor1) + c * pow(log(thermistor1), 3));       
-        Serial.print("Resistance Calculated: ");
-        Serial.println(thermistor1);
-        
-        totalTemp1 += temperature1;               // adds the new measured/calculated temperature to the total of each thermistor
-    }
-    // list of average temperatures for each sensor
-    float avgTemp1 = totalTemp1 / avgThermLoop;
-
-    Serial.print("Temperature (Celcius):  ");
-    Serial.println(avgTemp1);
-    //delay(1000);  // time before next reading
-    return avgTemp1;
 }
 
 void WatchDogReset() {
@@ -73,22 +60,47 @@ void WatchDogReset() {
 }
 
 void loop() {
-    digitalWrite(LEDPIN, HIGH);                     // turns LED on
-    delay (1000);                                   // used to slow LED blink 
+    //digitalWrite(LEDPIN, HIGH);                                         // turns LED on                                   
     
+    // read analog pins in sequence, calculate the temperature for each and store into array
+    for (int i = 0; i < thermistor_count; i++){
+        thermistor_reading = analogRead(i);
+        temperature_readings[i] = calcTemp(thermistor_reading);
+    }
+
     /* Realize PI Controller */
-    error = TF_SP - calcTemp();                     // error is the SET_POINT - ACTUAL (TF_PV)
+    error = TF_SP - selected_PID_input(temperature_readings);           // error is the SET_POINT - ACTUAL (TF_PV)
     integrator_term = integrator_term + (TS*error)/1000;
     duty_cycle = KP*error + KI*integrator_term;
-    if (duty_cycle > 1)
+    if (duty_cycle > 1)                                                 // protection to not make duty cycle nonsensical
         duty_cycle =1;
     else if (duty_cycle < 0)
         duty_cycle = 0;
     
-    analogWrite(PWM_pin, duty_cycle*analogMax);     // writes an pwm signal proportional to (analogMax * duty_cycle) to the PWM pin. Ex. 255*0.5 or 255*.1
+    // write duty cycle to heater pins
+    analogWrite(heater_1_Pin, duty_cycle*analogMax);                    // writes an pwm signal proportional to (analogMax * duty_cycle) to the PWM pin. Ex. 255*0.5 or 255*.1
+    analogWrite(heater_2_Pin, duty_cycle*analogMax);     
+    analogWrite(heater_3_Pin, duty_cycle*analogMax);     
 
-    //Write
+
+    // report each temperatures to BBB
+    if (BBB_comms.available() > 0){
+        digitalWrite(LEDPIN, HIGH);
+
+        BBB_comms.print('|');                                           // start each block of temps with a |
+        for(int i = 0; i <= thermistor_count; i++){
+            if (i < thermistor_count - 1){
+            //double temperature = temperature_readings[i];
+            temperature_string = String(temperature_readings[i],DEC);   // sent double to string
+            mini_temperature = temperature_string.substring(0,6);       // save 3 digits before decimal, decimal point, and 2 digits after
+            BBB_comms.print(mini_temperature + ',');                    // comma separate the values
+            }
+            else BBB_comms.print(mini_temperature + ';');               // last value gets printed with a ; to mark end
+        }
+    }
+
+    // tidying up
     WatchDogReset();
     digitalWrite(LEDPIN, LOW);
-    delay(1000);
+    delay(1000);                // used to slow the PI(D) update, also sets minimum period for LED blink
 }
