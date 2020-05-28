@@ -60,8 +60,9 @@ void WatchDogReset() {
 }
 
 void loop() {
-    //digitalWrite(LEDPIN, HIGH);                                         // turns LED on                                   
-    
+    //digitalWrite(LEDPIN, HIGH);                                         // blips LED on                                   
+    digitalWrite(LEDPIN, HIGH);
+
     // read analog pins in sequence, calculate the temperature for each and store into array
     for (int i = 0; i < thermistor_count; i++){
         thermistor_reading = analogRead(i);
@@ -85,8 +86,6 @@ void loop() {
 
     // report each temperatures to BBB
     if (BBB_comms.available() > 0){
-        digitalWrite(LEDPIN, HIGH);
-
         BBB_comms.print('|');                                           // start each block of temps with a |
         for(int i = 0; i <= thermistor_count; i++){
             if (i < thermistor_count - 1){
