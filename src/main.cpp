@@ -32,11 +32,11 @@ void setup() {
     BBB_comms.begin(baudRate);                       // change baud rate accordingly
     analogReadRes(analogBitCount);                // set analog reading bit count
 
+    //WATCHDOG code
     noInterrupts();                               // interrupts must be disabled while setting up the watchdog timer
     WDOG_UNLOCK = WDOG_UNLOCK_SEQ1;               // Unlock both sequences for Watch dog
     WDOG_UNLOCK = WDOG_UNLOCK_SEQ2;
     delayMicroseconds(1);
-
     WDOG_STCTRLH = 0x0001;                        // Watchdog Status & Control Register High value
     WDOG_TOVALL = 0x1388;                         // Lower 16 bits  (Time-out value low)
     WDOG_TOVALH = 0;                              // Upper 16 bits  (Time-out value high)
@@ -87,7 +87,7 @@ void loop() {
     // report each temperatures to BBB
     if (BBB_comms.available() > 0){
         BBB_comms.print('|');                                           // start each block of temps with a |
-        for(int i = 0; i <= thermistor_count; i++){
+        for(int i = 0; i < thermistor_count; i++){
             if (i < thermistor_count - 1){
             //double temperature = temperature_readings[i];
             temperature_string = String(temperature_readings[i],DEC);   // sent double to string
