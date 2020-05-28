@@ -99,7 +99,18 @@ void loop() {
                 BBB_comms.print(mini_temperature + ';');                // last value gets printed with a ; to mark end
                 }               
         }
-
+        // for PID debugging. Prints the duty cycle.
+        /*
+        BBB_comms.println();
+        double selected_temp = selected_PID_input(temperature_readings);
+        String selected_PID_temp = String(selected_temp, DEC);
+        BBB_comms.println("selected PID temp is: "+ selected_PID_temp);
+        String duty_cycle_str = String(duty_cycle, DEC);
+        BBB_comms.println("duty cycle is: "+ duty_cycle_str);
+        String integrator_str = String(integrator_term, DEC);
+        BBB_comms.println("integrator term is: "+ integrator_str);
+        BBB_comms.println();
+        */
     // tidying up
     WatchDogReset();
     digitalWrite(LEDPIN, LOW);
