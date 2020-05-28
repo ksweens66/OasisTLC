@@ -93,7 +93,11 @@ void loop() {
             mini_temperature = temperature_string.substring(0,6);       // save 3 digits before decimal, decimal point, and 2 digits after
             BBB_comms.print(mini_temperature + ',');                    // comma separate the values
             }
-            else BBB_comms.print(mini_temperature + ';');               // last value gets printed with a ; to mark end
+            else {
+                temperature_string = String(temperature_readings[thermistor_count-1],DEC);   // sent double to string
+                mini_temperature = temperature_string.substring(0,6);
+                BBB_comms.print(mini_temperature + ';');                // last value gets printed with a ; to mark end
+                }               
         }
 
     // tidying up

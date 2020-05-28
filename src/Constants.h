@@ -19,7 +19,8 @@ const int       analogMax = (1 << analogBitCount) - 1;// maximum analog value
 const int       heater_1_Pin = 5;                     // Heater 1 PWM pin
 const int       heater_2_Pin = 6;                     // Heater 2 PWM pin
 const int       heater_3_Pin = 9;                     // Heater 3 PWM pin
-const int       thermistor_count = 9;
+const int       thermistor_count = 3;                 // number of heaters  
+const int       middle_index = 1;                     // the index of the middle of the array of temps. Ex. for 3 thermistors we have 0,1,2. Middle is 1.
 
 const int TS = 100;                                   // Time sample
 const float KP = .25;                                 // Proportional gain
