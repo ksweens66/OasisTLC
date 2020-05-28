@@ -16,7 +16,6 @@ const double    c = 8.974e-8;                         // taken using dataset and
 const int       baudRate = 115200;                    // baud rate
 const int       analogBitCount = 14;                  // analog bit count
 const int       analogMax = (1 << analogBitCount) - 1;// maximum analog value
-const int       avgThermLoop = 5;                     // number of loops to calculate the average thermistor value
 const int       heater_1_Pin = 5;                     // Heater 1 PWM pin
 const int       heater_2_Pin = 6;                     // Heater 2 PWM pin
 const int       heater_3_Pin = 9;                     // Heater 3 PWM pin
