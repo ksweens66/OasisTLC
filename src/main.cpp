@@ -83,9 +83,8 @@ void loop() {
     analogWrite(heater_2_Pin, duty_cycle*analogMax);     
     analogWrite(heater_3_Pin, duty_cycle*analogMax);     
 
-
+    
     // report each temperatures to BBB
-    if (BBB_comms.available() > 0){
         BBB_comms.print('|');                                           // start each block of temps with a |
         for(int i = 0; i < thermistor_count; i++){
             if (i < thermistor_count - 1){
@@ -96,7 +95,6 @@ void loop() {
             }
             else BBB_comms.print(mini_temperature + ';');               // last value gets printed with a ; to mark end
         }
-    }
 
     // tidying up
     WatchDogReset();
