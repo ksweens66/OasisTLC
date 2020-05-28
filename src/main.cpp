@@ -23,6 +23,8 @@ double  temperature_readings[thermistor_count];
 
 String temperature_string;
 String mini_temperature;
+String duty_cycle_str;
+String mini_duty_cycle;
 
 IntervalTimer wdTimer;                                // Initialize Interval Timer          
 void WatchDogReset();
@@ -96,7 +98,10 @@ void loop() {
             else {
                 temperature_string = String(temperature_readings[thermistor_count-1],DEC);   // sent double to string
                 mini_temperature = temperature_string.substring(0,6);
-                BBB_comms.print(mini_temperature + ';');                // last value gets printed with a ; to mark end
+                BBB_comms.print(mini_temperature + ',');                // last value gets printed with a ; to mark end
+                duty_cycle_str = String(duty_cycle, DEC);
+                mini_duty_cycle = duty_cycle_str.substring(0,6);
+                BBB_comms.println(mini_duty_cycle + ';');   // print the duty cycle to make Normen happy
                 }               
         }
         // for PID debugging. Prints the duty cycle.
