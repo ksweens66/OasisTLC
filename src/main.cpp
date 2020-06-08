@@ -80,6 +80,29 @@ void loop() {
     else if (duty_cycle < 0)
         duty_cycle = 0;
     
+    //PI Integrator anti-windup Check Clamping Method 
+    //need to also define saturation limits
+    
+    //firstcheck: check output of pi before and after saturation check
+    //if (before == after):
+        //firstcheck output == 0
+    //else:
+        //firstcheck output == 1
+    
+    //secondcheck: check pi output sign with error sign
+    //if (both positive)
+        //integrator is still adding
+    //if (both negative)
+        //integrator trying to make it more negative
+    
+    //comparing both firstcheck and secondcheck
+    // if firstcheck saturates and still adding past saturation:
+    //(integrator_term == 0) //clamp
+    // if firstcheck saturates and still subtracting past saturation:
+        //(integrator_term == 0) //clamp
+    //if error changes sign or controller not in saturation:
+        // integrator_term = integrator_term + (TS*error)/1000; //restore integrator term
+    
     // write duty cycle to heater pins
     analogWrite(heater_1_Pin, duty_cycle*analogMax);                    // writes an pwm signal proportional to (analogMax * duty_cycle) to the PWM pin. Ex. 255*0.5 or 255*.1
     analogWrite(heater_2_Pin, duty_cycle*analogMax);     
