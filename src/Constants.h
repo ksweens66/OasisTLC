@@ -21,6 +21,8 @@ const int       heater_2_Pin = 6;                     // Heater 2 PWM pin
 const int       heater_3_Pin = 9;                     // Heater 3 PWM pin
 const int       thermistor_count = 3;                 // number of heaters  
 const int       middle_index = 1;                     // 0...8 is 4. The index of the middle of the array of temps. Ex. for 3 thermistors we have 0,1,2. Middle is 1.
+//const int       saturationHigh = ; 
+//const int       saturationLow = ;
 
 const int TS = 100;                                   // Time sample
 const float KP = .25;                                 // Proportional gain
