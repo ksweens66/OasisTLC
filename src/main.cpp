@@ -80,7 +80,10 @@ void loop() {
     else if (duty_cycle < 0)
         duty_cycle = 0;
     
-    //PI Integrator anti-windup Check Clamping Method 
+    //PI Integrator anti-windup Check Clamping Method
+    if (error == 0)
+        integrator_term =0; //makes sure that when we have reached SET_POINT stop adding heat
+    
     //need to also define saturation limits
     
     //firstcheck: check output of pi before and after saturation check
