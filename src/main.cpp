@@ -80,6 +80,12 @@ void loop() {
     else if (duty_cycle < 0)
         duty_cycle = 0;
     
+    /* Realize PI Tuning (Tyreus-Luyben) from Frequency Response */
+    
+    //Record ultimate gain and ultimate period: Ku and Pu  
+    Kp = Ku/3.2; 
+    KI = 2.2*Pu;
+    
     //PI Integrator anti-windup Check Clamping Method
     if (error == 0)
         integrator_term =0; //makes sure that when we have reached SET_POINT stop adding heat
