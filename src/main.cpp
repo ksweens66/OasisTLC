@@ -70,34 +70,41 @@ void loop() {
         thermistor_reading = analogRead(i);
         temperature_readings[i] = calcTemp(thermistor_reading);
     }
-
     /* Realize PI Controller */
     error = TF_SP - selected_PID_input(temperature_readings);           // error is the SET_POINT - ACTUAL (TF_PV)
     integrator_term = integrator_term + (TS*error)/1000;
     duty_cycle = KP*error + KI*integrator_term;
-    if (duty_cycle > 1)                                                 // protection to not make duty cycle nonsensical
-        duty_cycle =1;
-    else if (duty_cycle < 0)
-        duty_cycle = 0;
-    
+    if (duty_cycle > 1){                                                 // protection to not make duty cycle nonsensical
+        duty_cycle =1;}
+    else if (duty_cycle < 0){
+        duty_cycle = 0;}
+ 
     /* Realize PI Tuning (Tyreus-Luyben) from Frequency Response */
-    
     //Record ultimate gain and ultimate period: Ku and Pu  
     Kp = Ku/3.2; 
     KI = 2.2*Pu;
+ 
+    //when steady state is reached, stop adding
+    if (error == 0){
+        integrator_term = 0;} //makes sure that when we have reached SET_POINT stop adding heat
     
-    //PI Integrator anti-windup Check Clamping Method
-    if (error == 0)
-        integrator_term =0; //makes sure that when we have reached SET_POINT stop adding heat
+    //PI Integrator anti-windup Check Clamping Method (aka conditional integration)
     
     //need to also define saturation limits
     
     //firstcheck: check output of pi before and after saturation check
-    //if (before == after):
-        //firstcheck output == 0
-    //else:
-        //firstcheck output == 1
+    if (saturationHigh > selected_PID_input(temperature_readings)){
+        selected_PID_input(temperature_readings) = saturationHigh;}
+
+    if (saturationLow < selected_PID_input(temperature_readings)){
+        selected_PID_input(temperature_readings) = saturationLow;}
     
+    if (before == after){
+        firstCheck = 0;}
+    else {
+        firstCheck = 1;
+    }
+
     //secondcheck: check pi output sign with error sign
     //if (both positive)
         //integrator is still adding
