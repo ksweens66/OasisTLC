@@ -89,35 +89,27 @@ void loop() {
         integrator_term = 0;} //makes sure that when we have reached SET_POINT stop adding heat
     
     //PI Integrator anti-windup Check Clamping Method (aka conditional integration)
-    
-    //need to also define saturation limits
+    //goal is to stop integrating if beyond our limits  between our threshold and it breaking down 
+    //defined saturation limits around spectrometer, with a 5 degree C buffer between absolute min and max capable temperatures
     
     //firstcheck: check output of pi before and after saturation check
-    if (saturationHigh > selected_PID_input(temperature_readings)){
-        selected_PID_input(temperature_readings) = saturationHigh;}
+    if ( (saturationHigh > selected_PID_input(temperature_readings)) && (error > 0) )
+        {
+        integrator_term == 0;
+        //clamps when reaching a "hot temperature" and error term  is still adding 
+        }
+    //firstcheck: check output of pi before and after saturation check
+    else if ( (saturationLow < selected_PID_input(temperature_readings)) && (error < 0) )
+        {
+        integrator_term == 0;
+        //clamps when reaching a "cold temperature" and error term  is still subtracting
+        }
+    else
+       {
+        integrator_term = integrator_term + (TS*error)/1000;
+        //restores integrator when between an optimal range 
+        }
 
-    if (saturationLow < selected_PID_input(temperature_readings)){
-        selected_PID_input(temperature_readings) = saturationLow;}
-    
-    if (before == after){
-        firstCheck = 0;}
-    else {
-        firstCheck = 1;
-    }
-
-    //secondcheck: check pi output sign with error sign
-    //if (both positive)
-        //integrator is still adding
-    //if (both negative)
-        //integrator trying to make it more negative
-    
-    //comparing both firstcheck and secondcheck
-    // if firstcheck saturates and still adding past saturation:
-    //(integrator_term == 0) //clamp
-    // if firstcheck saturates and still subtracting past saturation:
-        //(integrator_term == 0) //clamp
-    //if error changes sign or controller not in saturation:
-        // integrator_term = integrator_term + (TS*error)/1000; //restore integrator term
     
     // write duty cycle to heater pins
     analogWrite(heater_1_Pin, duty_cycle*analogMax);                    // writes an pwm signal proportional to (analogMax * duty_cycle) to the PWM pin. Ex. 255*0.5 or 255*.1
