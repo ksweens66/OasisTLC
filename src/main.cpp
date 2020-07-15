@@ -84,9 +84,9 @@ void loop() {
     Kp = Ku/3.2; 
     KI = 2.2*Pu;
  
-    //when steady state is reached, stop adding
-    if (error == 0){
-        integrator_term = 0;} //makes sure that when we have reached SET_POINT stop adding heat
+    //when steady state is reached, stop adding, but maybe not needed for our design to that level of percision
+//     if (error == 0){
+//         integrator_term = 0;} //makes sure that when we have reached SET_POINT stop adding heat
     
     //PI Integrator anti-windup Check Clamping Method (aka conditional integration)
     //goal is to stop integrating if beyond our limits  between our threshold and it breaking down 
