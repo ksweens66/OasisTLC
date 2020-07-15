@@ -92,23 +92,29 @@ void loop() {
     //goal is to stop integrating if beyond our limits  between our threshold and it breaking down 
     //defined saturation limits around spectrometer, with a 5 degree C buffer between absolute min and max capable temperatures
     
-    //firstcheck: check output of pi before and after saturation check
-    if ( (saturationHigh > selected_PID_input(temperature_readings)) && (error > 0) )
+
+    if ( (saturationHigh > selected_PID_input(temperature_readings)))
+    {
+        if (error > 0)
         {
-        integrator_term == 0;
+        integrator_term = 0;
         //clamps when reaching a "hot temperature" and error term  is still adding 
         }
+    }
     //firstcheck: check output of pi before and after saturation check
-    else if ( (saturationLow < selected_PID_input(temperature_readings)) && (error < 0) )
+    if (saturationLow < selected_PID_input(temperature_readings))
+    {
+        if (error < 0)
         {
-        integrator_term == 0;
-        //clamps when reaching a "cold temperature" and error term  is still subtracting
+        integrator_term = 0;
+        //clamps when reaching a "hot temperature" and error term  is still adding 
         }
+    }
     else
        {
         integrator_term = integrator_term + (TS*error)/1000;
         //restores integrator when between an optimal range 
-        }
+       }
 
     
     // write duty cycle to heater pins
