@@ -102,7 +102,7 @@ void loop() {
         }
     }
     
-    if (saturationLow < selected_PID_input(temperature_readings)) //check if current temperature is lower than value
+    if (saturationLow > selected_PID_input(temperature_readings)) //check if current temperature is lower than value
     {
         if (integrator_term < 0) // check if integrator is still subtracting
         {
