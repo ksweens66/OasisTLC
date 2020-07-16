@@ -93,18 +93,18 @@ void loop() {
     //defined saturation limits around spectrometer, with a 5 degree C buffer between absolute min and max capable temperatures
     
 
-    if (saturationHigh < selected_PID_input(temperature_readings)) //check if current temperature is higher than value
+    if (saturationHigh < selected_PID_input(temperature_readings)) //check if current temperature is higher than SV
     {
-        if (integrator_term > 0) // check if integrator is still adding
+        if (error < 0) // check SP is actually smaller than current temperature
         {
         integrator_term = 0;
         //clamps when reaching a "hot temperature" and error term is reset
         }
     }
     
-    if (saturationLow > selected_PID_input(temperature_readings)) //check if current temperature is lower than value
+    if (saturationLow > selected_PID_input(temperature_readings)) //check if current temperature is lower than SV
     {
-        if (integrator_term < 0) // check if integrator is still subtracting
+        if (error > 0) // check if SP is greater than current temperature
         {
         integrator_term = 0;
         //clamps when reaching a "cold temperature" and error term  is reset
