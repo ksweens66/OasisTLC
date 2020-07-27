@@ -3,6 +3,7 @@
 //Filename: Constants.h
 //Purpose : Global constants for calculating temperatures and setting pin definitions 
 
+const int       MATLAB_ENDL_ENABLE = 1;                   // used to generate a newline for ease of matlab capture
 
 const int       LEDPIN = 13;                          // used for heartbeat
 const int       frequency = 93750;
