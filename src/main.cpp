@@ -81,8 +81,13 @@ void loop() {
  
     /* Realize PI Tuning (Tyreus-Luyben) from Frequency Response */
     //Record ultimate gain and ultimate period: Ku and Pu  
-    Kp = Ku/3.2; 
-    KI = 2.2*Pu;
+    //Kp = Ku/3.2; 
+    //KI = 2.2*Pu;
+    //we will not use TL method, because agressive tuning will not work because the thermal control will have a long lag time
+    //after the meeting with Schiano, we are actually using the step response analysis:
+    //we need to employ manual control of the loop (in the Auto/Manual Station) which would allow us to adjust our setpoint to 10% of our desired temp for example
+    
+    
  
     //when steady state is reached, stop adding, but maybe not needed for our design to that level of percision
 //     if (error == 0){
