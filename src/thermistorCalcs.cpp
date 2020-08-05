@@ -43,6 +43,6 @@ double selected_PID_input(double calculated_temperatures[thermistor_count]){
         //2. Find the error between each read sensor and the mean
         //
         //3. use the definition of standard deviation
-        //4.
-        //if abs(k) > 3*std; reject error of (k)
+        //4. if abs(k) > 3*std; reject error of (k)
+        //5. return the average
 }
