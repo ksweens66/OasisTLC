@@ -12,6 +12,8 @@ double calcTemp(double analog_value) {
 }
 
 double selected_PID_input(double calculated_temperatures[thermistor_count]){
+        //selected_PID_input(double calculated_temperatures[])
+        
 //     double sorted_temperatures[thermistor_count];
 //     memcpy(sorted_temperatures,calculated_temperatures,sizeof(double)* thermistor_count);
 //     std::sort(sorted_temperatures,sorted_temperatures + thermistor_count);
