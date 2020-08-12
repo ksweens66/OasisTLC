@@ -11,7 +11,7 @@ double calcTemp(double analog_value) {
         return thermistor_temperature;       
 }
 
-double selected_PID_input(double calculated_temperatures[thermistor_count]){ //inputting in an array 
+double selected_PID_input(double calculated_temperatures[thermistor_count], int temp_count){ //inputting in an array 
         //selected_PID_input(double calculated_temperatures[])
         
 //     double sorted_temperatures[thermistor_count];
@@ -23,7 +23,7 @@ double selected_PID_input(double calculated_temperatures[thermistor_count]){ //i
         double tcerror, sum, avg, threesd;
         int count; 
         memcpy(sorted_temperatures,calculated_temperatures,sizeof(double)* thermistor_count); //copying into a new array
-        count = sizeof(sorted_temperatures)/sizeof(sorted_temperatures[0]); //since all elements have same byte size
+//         count = sizeof(sorted_temperatures)/sizeof(sorted_temperatures[0]); //since all elements have same byte size
         
         for (int i = 0; i < count; i++)
         {
@@ -31,9 +31,9 @@ double selected_PID_input(double calculated_temperatures[thermistor_count]){ //i
         }
         
         avg = sum/count;
-        for (int i = 0; i < count; i++)
-        {
-        threesd = 3*sqrt((1/count) * pow(sorted_temperatures[i] - avg, 2));
+//         for (int i = 0; i < count; i++)
+//         {
+        threesd = 3*sqrt((1/temp_count) * pow(sorted_temperatures[i] - avg, 2));
         tcerror = abs(sum - sorted_temperatures[i]);
                 if (tcerror > thresd)
                 {
