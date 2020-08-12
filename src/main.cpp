@@ -20,6 +20,7 @@ double  duty_cycle = 0;                                // Duty cycle, 0 at start
 //int     percent =   analogMax / 2;                   // initializes the percent to 50% of the maximum analog value. Not sure I like this, so it is commented out. To add back in, do an analog write in the setup()
 double  thermistor_reading;
 double  temperature_readings[thermistor_count];
+int temp_count;
 
 String temperature_string;
 String mini_temperature;
@@ -69,9 +70,10 @@ void loop() {
     for (int i = 0; i < thermistor_count; i++){
         thermistor_reading = analogRead(i);
         temperature_readings[i] = calcTemp(thermistor_reading);
+        temp_count = sizeof(temperature_readings) / sizeof(temperature_readings[0]); //finding length of array
     }
     /* Realize PI Controller */
-    error = TF_SP - selected_PID_input(temperature_readings);           // error is the SET_POINT - ACTUAL (TF_PV)
+    error = TF_SP - selected_PID_input(temperature_readings, temp_count);           // error is the SET_POINT - ACTUAL (TF_PV)
     integrator_term = integrator_term + (TS*error)/1000;
     duty_cycle = KP*error + KI*integrator_term;
     if (duty_cycle > 1){                                                 // protection to not make duty cycle nonsensical
