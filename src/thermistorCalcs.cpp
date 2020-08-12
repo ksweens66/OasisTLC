@@ -11,7 +11,7 @@ double calcTemp(double analog_value) {
         return thermistor_temperature;       
 }
 
-double selected_PID_input(double calculated_temperatures[thermistor_count]){
+double selected_PID_input(double calculated_temperatures[thermistor_count]){ //inputting in an array 
         //selected_PID_input(double calculated_temperatures[])
         
 //     double sorted_temperatures[thermistor_count];
@@ -47,4 +47,21 @@ double selected_PID_input(double calculated_temperatures[thermistor_count]){
         //3. use the definition of standard deviation
         //4. if abs(k) > 3*std; reject error of (k)
         //5. return the average
+}
+
+
+// double getAverage(int arr[], int size);
+
+// int main () {
+//    // an int array with 5 elements.
+//    int balance[5] = {1000, 2, 3, 17, 50};
+//    double avg;
+
+//    // pass pointer to the array as an argument.
+//    avg = getAverage( balance, 5 ) ;
+ 
+//    // output the returned value 
+//    cout << "Average value is: " << avg << endl; 
+    
+//    return 0;
 }
