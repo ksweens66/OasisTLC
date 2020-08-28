@@ -19,9 +19,9 @@ double selected_PID_input(double temperature_readings[])
 {
   double average = 0;
   double sum = 0;
-  double sdh = 0; //standard deviation 
+  double sdh = 0; // the standard deviation quantity inside the sqrt
   double threesd = 0;
-  double abserrori = 0;
+  double abserrori = 0; //actually temperature difference between the mean
   double newsetpoint = 0;
   std::vector<double> vertices;
   
