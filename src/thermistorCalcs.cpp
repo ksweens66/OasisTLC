@@ -3,6 +3,8 @@
 #include <math.h>
 #include <string.h>
 #include <algorithm>
+#include <ArduinoSTL.h>
+#include <numeric> 
 
 double calcTemp(double analog_value) {
         double thermistor_resistance, thermistor_temperature;
@@ -11,7 +13,9 @@ double calcTemp(double analog_value) {
         return thermistor_temperature;       
 }
 
-double selected_PID_input(double temperature_readings[])
+double selected_PID_input(double temperature_readings[]) 
+  //takes in a static array of 9 temperature values and returns a double setpoint
+ // remember to download the libraries #include <ArduinoSTL.h> and #include <numeric> 
 {
   double average = 0;
   double sum = 0;
