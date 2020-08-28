@@ -70,7 +70,6 @@ void loop() {
     for (int i = 0; i < thermistor_count; i++){
         thermistor_reading = analogRead(i);
         temperature_readings[i] = calcTemp(thermistor_reading);
-        temp_count = sizeof(temperature_readings) / sizeof(temperature_readings[0]); //finding length of array
     }
     /* Realize PI Controller */
     error = TF_SP - selected_PID_input(temperature_readings, temp_count);           // error is the SET_POINT - ACTUAL (TF_PV)
