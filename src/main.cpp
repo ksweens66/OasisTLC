@@ -72,7 +72,7 @@ void loop() {
         temperature_readings[i] = calcTemp(thermistor_reading);
     }
     /* Realize PI Controller */
-    error = TF_SP - selected_PID_input(temperature_readings, temp_count);           // error is the SET_POINT - ACTUAL (TF_PV)
+    error = TF_SP - selected_PID_input(temperature_readings);           // error is the SET_POINT - ACTUAL (TF_PV)
     integrator_term = integrator_term + (TS*error)/1000;
     duty_cycle = KP*error + KI*integrator_term;
     if (duty_cycle > 1){                                                 // protection to not make duty cycle nonsensical
