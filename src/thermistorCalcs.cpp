@@ -11,57 +11,45 @@ double calcTemp(double analog_value) {
         return thermistor_temperature;       
 }
 
-double selected_PID_input(double calculated_temperatures[thermistor_count], int temp_count){ //inputting in an array 
-        //selected_PID_input(double calculated_temperatures[])
+double selected_PID_input(double temperature_readings[])
+{
+  double average = 0;
+  double sum = 0;
+  double sdh = 0; //standard deviation 
+  double threesd = 0;
+  double abserrori = 0;
+  double newsetpoint = 0;
+  std::vector<double> vertices;
+  
+  for (int i = 0; i < 9; i++) //gets all 9 thermistor values
+  {
+    sum = sum + temperature_readings[i];
+  }
+  average = sum / 9; //calculates the average
+
+  ///calculating to 3 standard deviations ///
+  for (int i = 0; i < 9; i++)
+  {
+    sdh += pow(temperature_readings[i] - average, 2);
+  }
+  threesd = sqrt(sdh / 9);
+  //////
         
-//     double sorted_temperatures[thermistor_count];
-//     memcpy(sorted_temperatures,calculated_temperatures,sizeof(double)* thermistor_count);
-//     std::sort(sorted_temperatures,sorted_temperatures + thermistor_count);
-//     return sorted_temperatures[middle_index];
-        //Schiano's Standard Deviation Method
-        double sorted_temperatures[thermistor_count];
-        double tcerror, sum, avg, threesd;
-        int count; 
-        memcpy(sorted_temperatures,calculated_temperatures,sizeof(double)* thermistor_count); //copying into a new array
-//         count = sizeof(sorted_temperatures)/sizeof(sorted_temperatures[0]); //since all elements have same byte size
-        
-        for (int i = 0; i < count; i++)
-        {
-        sum = sorted_temperatures[i];
-        }
-        
-        avg = sum/count;
-//         for (int i = 0; i < count; i++)
-//         {
-        threesd = 3*sqrt((1/temp_count) * pow(sorted_temperatures[i] - avg, 2));
-        tcerror = abs(sum - sorted_temperatures[i]);
-                if (tcerror > thresd)
-                {
-                 ///remove ith term from sorted temperatures       
-                }
-        }        
-        return avg;
-        //1. First find the mean of the sensors
-        //2. Find the error between each read sensor and the mean
-        //
-        //3. use the definition of standard deviation
-        //4. if abs(k) > 3*std; reject error of (k)
-        //5. return the average
-}
+  for (int i = 0; i < 9; i++)
+  {
+    abserrori = abs(temperature_readings[i] - average);
+    if (abserrori > threesd) //reject sensor data for values greater than 3 sd
+    { 
+        continue;
+    }
+    else
+    {
+    vertices.push_back({temperature_readings[i]}); //add values within 3sd to the new, dynamic array 
+    }
+  }
 
+  newsetpoint = (accumulate(vertices.begin(),vertices.end(),0))/vertices.size();
+  vertices.clear();
 
-// double getAverage(int arr[], int size);
-
-// int main () {
-//    // an int array with 5 elements.
-//    int balance[5] = {1000, 2, 3, 17, 50};
-//    double avg;
-
-//    // pass pointer to the array as an argument.
-//    avg = getAverage( balance, 5 ) ;
- 
-//    // output the returned value 
-//    cout << "Average value is: " << avg << endl; 
-    
-//    return 0;
+  return newsetpoint;
 }
