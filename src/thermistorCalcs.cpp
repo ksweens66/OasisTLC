@@ -39,7 +39,7 @@ double selected_PID_input(double temperature_readings[])
   {
     sdh += pow(temperature_readings[i] - average, 2);
   }
-  threesd = sqrt(sdh / 9);
+  threesd = 3*sqrt(sdh / 9); //don't forget 3 sd
   //////
         
   for (int i = 0; i < 9; i++)
