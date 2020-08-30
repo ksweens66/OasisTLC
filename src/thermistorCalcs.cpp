@@ -45,12 +45,8 @@ double selected_PID_input(double temperature_readings[])
   for (int i = 0; i < 9; i++)
   {
     abserrori = abs(temperature_readings[i] - average);
-    if (abserrori > threesd) //reject sensor data for values greater than 3 sd
+    if (abserrori < threesd) //reject sensor data for values greater than 3 sd
     { 
-        continue;
-    }
-    else
-    {
     vertices.push_back({temperature_readings[i]}); //add values within 3sd to the new, dynamic array 
     }
   }
