@@ -4,8 +4,6 @@
 #include <string.h>
 #include <algorithm>
 
-using namespace std; //need this to use the accumulate function
-
 double calcTemp(double analog_value) {
         double thermistor_resistance, thermistor_temperature;
         thermistor_resistance = (analog_value * resistor) / (analogMax - analog_value);                       // calculates resistance of thermistor1
@@ -49,8 +47,4 @@ double selected_PID_input(double temperature_readings[])
   }
   newsetpoint = setpointsum/stackcounter;
   return newsetpoint;
-}
-        
-        
-        
 }
