@@ -23,6 +23,11 @@ const int       heater_3_Pin = 9;                     // Heater 3 PWM pin
 const int       thermistor_count = 3;                 // number of heaters  
 const int       middle_index = 1;                     // 0...8 is 4. The index of the middle of the array of temps. Ex. for 3 thermistors we have 0,1,2. Middle is 1.
 
+//limits set by spectrometer, most thermal sensitive instrument storage between (-10 to 50 C) or (263 to 323 K) 
+const double    saturationLow = 268;                  // 5 degrees above min
+const double    saturationHigh = 318;                 // 5 degrees below max
+
+
 const int TS = 100;                                   // Time sample
 const float KP = .25;                                 // Proportional gain
 const float KI = .05;                                 // Integral gain
