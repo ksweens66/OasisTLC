@@ -14,7 +14,6 @@ double calcTemp(double analog_value) {
 double selected_PID_input(double temperature_readings[]){
   //takes in a static array of 9 temperature values and returns a double setpoint
  // records data to 2 standard deviation
-{
   double average = 0;
   double sum = 0;
   double sdh = 0;
@@ -47,3 +46,4 @@ double selected_PID_input(double temperature_readings[]){
   }
   newsetpoint = setpointsum/stackcounter;
   return newsetpoint;
+}
