@@ -75,10 +75,41 @@ void loop() {
     error = TF_SP - selected_PID_input(temperature_readings);           // error is the SET_POINT - ACTUAL (TF_PV)
     integrator_term = integrator_term + (TS*error)/1000;
     duty_cycle = KP*error + KI*integrator_term;
-    if (duty_cycle > 1)                                                 // protection to not make duty cycle nonsensical
-        duty_cycle =1;
-    else if (duty_cycle < 0)
-        duty_cycle = 0;
+    if (duty_cycle > 1){                                                 // protection to not make duty cycle nonsensical
+        duty_cycle =1;}
+    else if (duty_cycle < 0){
+        duty_cycle = 0;}
+    
+
+    //we will not use TL method, because agressive tuning will not work because the thermal control will have a long lag time
+    //after the meeting with Schiano, we are actually using the step response analysis:
+    
+    //PI Integrator anti-windup Check Clamping Method (aka conditional integration)
+    //goal is to stop integrating if beyond our limits  between our threshold and it breaking down 
+    //defined saturation limits around spectrometer, with a 5 degree C buffer between absolute min and max capable temperatures
+
+    if (saturationHigh < selected_PID_input(temperature_readings)) //check if current temperature is higher than SH
+    {
+        if (error < 0) // check setpoint is actually smaller than current temperature
+        {
+        integrator_term = 0;
+        //clamps when reaching a "hot temperature" and error term is reset
+        }
+    }
+    
+   else if (saturationLow > selected_PID_input(temperature_readings)) //check if current temperature is lower than SL
+    {
+        if (error > 0) // check if setpoint is greater than current temperature
+        {
+        integrator_term = 0;
+        //clamps when reaching a "cold temperature" and error term  is reset
+        }
+    }
+    else
+       {
+        integrator_term = integrator_term + (TS*error)/1000;
+        //restores integrator when between an optimal range 
+       }
     
     // write duty cycle to heater pins
     analogWrite(heater_1_Pin, duty_cycle*analogMax);                    // writes an pwm signal proportional to (analogMax * duty_cycle) to the PWM pin. Ex. 255*0.5 or 255*.1
